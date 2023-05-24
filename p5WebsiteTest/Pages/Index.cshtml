@@ -4,7 +4,127 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<script>
+
+    const aspectRatio = 1920 / 1080;
+    const screenHeight = screen.height * 0.75;
+    const screenWidth = Math.round(screenHeight * aspectRatio);
+
+    let sinSlider;
+    let speedSlider;
+    let dotSlider;
+    let multiSlider;
+    let satSlider;
+    let briSlider;
+
+    let sinCoeff;
+    let dotSize;
+    let multi;
+    let speed;
+    let angle = 0;
+    let sat;
+    let bri;
+
+    let wavelengthTracker = 0;
+
+    let centerX = 140;
+    let centerY = screenHeight / 2;
+
+
+    let x1 = 140;
+    let y1 = screenHeight / 2;
+    let x2 = 140 + sinCoeff;
+    let y2 = (screenHeight / 2) - sinCoeff;
+
+
+    function setup() {
+        createCanvas(screenWidth, screenHeight);
+        colorMode(HSB, 360, 100, 100);
+        backgroundColor = color(0, 0, 0);
+        textSize(15);
+
+        sinSlider = createSlider(0, 120, 50, 1);
+        sinSlider.position(420, 84);
+        sinSlider.style('width', '120px');
+
+        speedSlider = createSlider(0.005, 0.05, 0.005, 0.005);
+        speedSlider.position(420, 104);
+        speedSlider.style('width', '120px');
+
+        dotSlider = createSlider(3, 30, 5, 1);
+        dotSlider.position(420, 124);
+        dotSlider.style('width', '120px');
+
+        multiSlider = createSlider(1, 20, 5, 0.5);
+        multiSlider.position(420, 144);
+        multiSlider.style('width', '120px');
+
+        satSlider = createSlider(0, 100, 75);
+        satSlider.position(420, 164);
+        satSlider.style('width', '120px');
+
+        briSlider = createSlider(0, 100, 90);
+        briSlider.position(420, 184);
+        briSlider.style('width', '120px');
+    }
+
+    function draw() {
+        background(backgroundColor);
+
+
+        fill(200, 100, 100);
+        noStroke();
+
+        text("Amplitude:", 8, 23);
+        text("Speed:", 8, 43);
+        text("Dot Size:", 8, 63);
+        text("Multiplier:", 8, 83);
+        text("Saturation:", 8, 103);
+        text("Brightness:", 8, 123);
+        text("Angle:", 8, 143);
+        text("Speed:", 8, 163);
+        waveOfDots();
+    }
+
+    function waveOfDots() {
+        sinCoeff = sinSlider.value();
+        speed = speedSlider.value();
+        dotSize = dotSlider.value();
+        multi = multiSlider.value();
+        sat = satSlider.value();
+        bri = briSlider.value();
+
+        noStroke();
+        for (let i = 0; i < screenWidth; i += 5) {
+            fill(i % 360, sat, bri);
+            circle(i, (screenHeight / 2) + (sinCoeff * Math.sin((i + angle + speed) * multi)), dotSize);
+//            circle(sinCoeff + i, (screenHeight / 2) + (sinCoeff * Math.sin((angle + speed) * multi)), dotSize);
+        }
+
+        fill(200, 100, 100);
+        circle(300 + (angle * 10), 300, 20);
+
+        fill(200, 100, 100);
+        text(`${sinCoeff}`, 90, 23);
+        text(`${speed}`, 77, 43);
+        text(`${dotSize}`, 90, 63);
+        text(`${multi}`, 90, 83);
+        text(`${sat}`, 90, 103);
+        text(`${bri}`, 90, 123);
+        text(`${angle}`, 90, 143);
+        text(`${speed}`, 90, 163);
+
+
+        stroke(0, 0, 100);
+        noFill();
+        circle(140, screenHeight / 2, sinCoeff * 2);
+
+        line(0, (screenHeight / 2) + (sinCoeff * Math.sin((angle + speed) * multi)), sinCoeff, (screenHeight / 2) + (sinCoeff * Math.sin((angle + speed) * multi)));
+        translate(centerX, centerY);
+        rotate(-angle * multi);
+        line(0, 0, -sinCoeff, 0);
+
+
+        angle += speed;
+    }
+</script>
